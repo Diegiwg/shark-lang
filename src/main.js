@@ -2,6 +2,9 @@
 
 import fs from "fs";
 
+import { compiler } from "./compiler.js";
+import { Keywords, Specials, TokensType } from "./models.js";
+
 const Args = {
     /**
      * @private
@@ -21,24 +24,6 @@ const Args = {
         return this._args.shift();
     },
 };
-
-const TokensType = {
-    KEYWORD: "keyword",
-    IDENTIFIER: "identifier",
-    LITERAL_STRING: "literal_string",
-    LITERAL_NUMBER: "literal_number",
-
-    OPEN_PARENTHESIS: "open_parenthesis",
-    CLOSE_PARENTHESIS: "close_parenthesis",
-    OPEN_BRACE: "open_brace",
-    CLOSE_BRACE: "close_brace",
-
-    EQUALS: "equals",
-    SEMICOLON: "semicolon",
-};
-
-const Specials = ["(", ")", "{", "}", ";"];
-const Keywords = ["var", "func"];
 
 /**
  * @param {string} source
@@ -208,5 +193,10 @@ function parse(source) {
         encoding: "utf-8",
     });
 
-    console.log(parse(source));
+    const tokens = parse(source);
+    console.log(tokens);
+
+    const compiled = compiler(tokens);
+
+    fs.writeFileSync("compiled.js", compiled);
 })();
